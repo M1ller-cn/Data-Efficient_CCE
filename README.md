@@ -30,6 +30,12 @@ they are regenerated on the authorized AutoDL instance and checked against the
 paper tables. This prevents an unverified local artifact from being presented
 as a published result.
 
+`scripts/export_external_decision_examples.py` produces three transparent
+illustrative external cases (one per support budget) from already frozen router
+predictions. The selection rule is median-error proximity within each K and is
+recorded in the resulting CSV; these examples are not used for performance
+reporting or model selection.
+
 ## Licence and citation
 
 The repository code is intended for scholarly reproducibility. Source data
