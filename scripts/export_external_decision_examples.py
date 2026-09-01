@@ -25,7 +25,7 @@ def load_external(path: str) -> pd.DataFrame:
     curve = raw[["experimentID", "temperature", "EIS_conductivity"]].copy()
     curve.columns = ["id", "T", "k"]
     curve["id"] = curve.id.astype(str)
-    curve["T"] = pd.to_numeric(curve.T, errors="coerce") + 273.15
+    curve["T"] = pd.to_numeric(curve["T"], errors="coerce") + 273.15
     curve["k"] = pd.to_numeric(curve.k, errors="coerce")
     curve = curve[np.isfinite(curve.T) & np.isfinite(curve.k) & (curve.k > 0)].copy()
     curve["log10_sigma"] = np.log10(curve.k)
