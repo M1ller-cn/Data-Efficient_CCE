@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+data/raw/
+data/derived/
+results/*.csv
+results/*.json
+results/*.pdf
+!results/.gitkeep
