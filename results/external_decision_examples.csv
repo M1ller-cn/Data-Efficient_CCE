@@ -1,0 +1,4 @@
+selection_rule,id,K,branch,support_temperatures_K,support_log10_sigma,query_temperature_K,observed_log10_sigma,router_prediction_log10_sigma,absolute_error_log10_sigma
+nearest to within-K median router absolute error; illustration only,PYA_30032021_BM070_4,3,RF constrained rate,283.15; 293.15; 303.15,-2.4074; -2.2728; -2.1326,313.15,-2.015510699739992,-2.026168780480734,0.0106580807407423
+nearest to within-K median router absolute error; illustration only,WOC_19012022_BM-K022_8,4,VFT curve,253.15; 263.15; 273.15; 283.15,-2.5960; -2.5001; -2.3426; -2.3052,293.15,-2.2323106904904866,-2.2180255748750817,0.0142851156154049
+nearest to within-K median router absolute error; illustration only,PYA_30032021_BM070_1,5,VFT curve,263.15; 273.15; 283.15; 293.15; 303.15,-2.7555; -2.5948; -2.4459; -2.3208; -2.1336,313.15,-2.055844254131606,-2.0715919308395105,0.0157476767079045
