@@ -19,24 +19,42 @@ from sklearn.model_selection import GroupShuffleSplit
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from src.sparse_router import load_calisol, make_query_sets, predict_policy
+from src.sparse_router import (
+    choose_vft_t0,
+    load_calisol,
+    make_query_sets,
+    predict_constrained_rf,
+)
 
 
-def inner_score(query_sets, fit_dois, valid_dois, p, seed):
+def inner_scores(query_sets, fit_dois, valid_dois, candidates, seed):
+    """Score every policy using one RF and one VFT prediction per K.
+
+    The branches do not depend on the candidate threshold. Reusing them is
+    mathematically identical to refitting them for each p, but avoids a
+    three-fold waste of CPU on the small grouped-validation audit.
+    """
     rows = []
     for k, queries in query_sets.items():
         train = queries[queries.doi.isin(fit_dois)].reset_index(drop=True)
         valid = queries[queries.doi.isin(valid_dois)].reset_index(drop=True)
-        prediction, branch, t0 = predict_policy(train, valid, k, p, seed)
-        rows.append(pd.DataFrame({
-            "doi": valid.doi, "K": k, "target": valid.target,
-            "prediction": prediction, "branch": branch, "vft_t0": t0,
-        }))
-    joined = pd.concat(rows, ignore_index=True)
-    doi_k = joined.assign(abs_error=lambda x: abs(x.target - x.prediction)).groupby(
-        ["doi", "K"], as_index=False
-    ).abs_error.mean()
-    return float(doi_k.groupby("doi").abs_error.mean().mean())
+        rf = predict_constrained_rf(train, valid, seed)
+        t0 = choose_vft_t0(train)
+        vft = valid[f"vft_{int(t0)}"].to_numpy()
+        by_doi = pd.DataFrame({
+            "doi": valid.doi.to_numpy(),
+            "rf": abs(valid.target.to_numpy() - rf),
+            "vft": abs(valid.target.to_numpy() - vft),
+        }).groupby("doi", as_index=False).mean()
+        for _, row in by_doi.iterrows():
+            rows.append({"doi": row.doi, "K": k, "rf": row.rf, "vft": row.vft})
+    errors = pd.DataFrame(rows)
+    scores = {}
+    for p in candidates:
+        selected = np.where(errors.K.to_numpy() < p, errors.rf.to_numpy(), errors.vft.to_numpy())
+        policy = errors[["doi", "K"]].assign(abs_error=selected)
+        scores[p] = float(policy.groupby("doi").abs_error.mean().mean())
+    return scores
 
 
 def main():
@@ -68,8 +86,8 @@ def main():
                 splitter = GroupShuffleSplit(n_splits=1, test_size=0.25, random_state=random_state)
                 fit_idx, valid_idx = next(splitter.split(outer_train, groups=outer_train))
                 fit_dois, valid_dois = outer_train[fit_idx], outer_train[valid_idx]
-                for p in candidates:
-                    score = inner_score(queries, fit_dois, valid_dois, p, random_state)
+                scores = inner_scores(queries, fit_dois, valid_dois, candidates, random_state)
+                for p, score in scores.items():
                     candidate_scores[p].append(score)
                     detail.append({
                         "outer_fold": fold, "held_out_doi": holdout,
