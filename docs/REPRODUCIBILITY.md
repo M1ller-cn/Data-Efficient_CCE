@@ -18,15 +18,21 @@ composition identifiers and target-side information are not input features.
 - **Random forest:** 500 trees, minimum leaf size 2, maximum feature fraction
   0.8, seed 17, one CPU thread.
 
-## Required artifacts for a manuscript release
+## Included revision-audit artifacts
 
-Before submission, the release must include:
+The checked audit run is stored under `results/revision_audit/`:
 
-1. the frozen development-row index and DOI split list;
-2. each result CSV cited by a table or figure;
-3. exact package versions and OS/Python details;
-4. scripts used to make manuscript figures;
-5. the public-source citation and licence information for every raw dataset.
+1. `router_stability_20/`: 20 seeds x 19 DOI-held-out folds, including the
+   complete inner-split scores, selection frequencies, candidate summaries,
+   and machine-readable protocol;
+2. `conformal_stability_20/`: the 20-seed grouped calibration audit, including
+   DOI--support coverage cells and its summary/protocol;
+3. `environment_autodl_cpu.txt`: Python and installed package versions on the
+   authorized CPU-only AutoDL instance;
+4. `data/derived/development_rows.npy`: the frozen row-index artifact only.
+
+The release does not include raw source tables. Their source citations and
+licensing conditions remain authoritative; see `data/README.md`.
 
 ## Main commands
 
@@ -34,12 +40,12 @@ Before submission, the release must include:
 python scripts/run_router_stability.py \
   --calisol-csv /path/to/calisol23_dataset.csv \
   --development-rows data/derived/development_rows.npy \
-  --output results/router_stability --n-seeds 50
+  --output results/router_stability --n-seeds 20 --n-inner-splits 3
 
 python scripts/run_grouped_split_conformal.py \
   --calisol-csv /path/to/calisol23_dataset.csv \
   --development-rows data/derived/development_rows.npy \
-  --output results/conformal_stability --n-calibration-seeds 30
+  --output results/conformal_stability --n-calibration-seeds 20
 ```
 
 Run these commands on the designated AutoDL CPU instance.  They are purposely

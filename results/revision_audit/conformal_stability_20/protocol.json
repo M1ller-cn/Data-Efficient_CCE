@@ -1,0 +1,13 @@
+{
+  "purpose": "Calibration sensitivity and DOI-resampled uncertainty for a fixed p=4 router.",
+  "policy": "RF constrained rate at K=3; VFT at K=4,5.",
+  "outer_protocol": "Leave one common DOI out.",
+  "calibration": "One disjoint 75/25 DOI fit/calibration split inside each outer-training pool, repeated only for sensitivity.",
+  "levels": [
+    0.8,
+    0.9,
+    0.95
+  ],
+  "n_calibration_seeds": 20,
+  "bootstrap_unit": "Held-out DOI, preserving the three K cells before averaging."
+}

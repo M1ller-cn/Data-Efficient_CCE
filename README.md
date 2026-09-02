@@ -19,16 +19,21 @@ reserved for a frozen external score.
 - `scripts/`: grouped-stability and interval-sensitivity experiments.
 - `data/`: instructions for obtaining public source data; raw tables are not
   redistributed here.
-- `results/`: tagged manuscript-release artifacts are placed here.
+- `results/`: checked manuscript-result artifacts and their protocol records.
 - `docs/REPRODUCIBILITY.md`: protocol, fixed choices, and commands.
 
 ## Current status
 
-The initial release contains the executable protocol and documentation. The
-frozen split indices and manuscript-result artifacts will be added only after
-they are regenerated on the authorized AutoDL instance and checked against the
-paper tables. This prevents an unverified local artifact from being presented
-as a published result.
+The checked revision audit is included. It contains the frozen development-row
+index, 20-seed DOI-grouped router-selection stability results, 20-seed grouped
+calibration-partition sensitivity results, and the AutoDL CPU environment
+record. The raw third-party tables are deliberately not redistributed; see
+`data/README.md` for source access and citation requirements.
+
+The repeated router audit covers 380 outer-fold decisions (20 seeds across 19
+held-out DOI sources): $p=4$ is selected in 376 decisions (98.95%). The
+calibration audit is a diagnostic of interval sensitivity, not a calibration
+guarantee for a chemistry-disjoint deployment.
 
 `scripts/export_external_decision_examples.py` produces three transparent
 illustrative external cases (one per support budget) from already frozen router
