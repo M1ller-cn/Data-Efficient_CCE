@@ -1,0 +1,11 @@
+{
+  "purpose": "Fixed-terminal support-budget allocation sensitivity analysis.",
+  "source": "CALiSol-23 development split with frozen row index.",
+  "query_construction": "One terminal segment per formulation with at least six distinct temperatures. K=3,4,5 use nested prefixes and the same sixth/final target.",
+  "outer_protocol": "Leave one DOI out over 19 common DOI sources.",
+  "router_selection": "Three DOI-grouped inner splits in each outer-training pool; p in {4,5,6} selected by equally weighted K=3,4,5 DOI-macro MAE.",
+  "budget_selection": "For each pre-specified cost c in {0, 0.0025, 0.005, 0.01, 0.02}, select K in {3,4,5} by inner MAE(K)+c*(K-3). No held-out DOI informs p or K.",
+  "inference_unit": "One terminal query per eligible formulation, DOI-macro MAE for evaluation.",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.5"
+}

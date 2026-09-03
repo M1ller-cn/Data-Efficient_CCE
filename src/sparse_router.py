@@ -101,6 +101,71 @@ def make_query_sets(data: pd.DataFrame, ks: Iterable[int] = (3, 4, 5)) -> dict[i
     return {k: q[q.doi.isin(common)].reset_index(drop=True) for k, q in queries.items()}
 
 
+def make_fixed_terminal_query_sets(
+    data: pd.DataFrame, ks: Iterable[int] = (3, 4, 5)
+) -> dict[int, pd.DataFrame]:
+    """Construct nested support budgets against one fixed terminal target.
+
+    Each eligible formulation contributes exactly one terminal segment.  For a
+    requested maximum support budget ``max(ks)``, the final ``max(ks) + 1``
+    distinct-temperature observations are retained.  Every budget uses the
+    first ``K`` observations of this segment and predicts the same final
+    observation.  This is intentionally distinct from :func:`make_query_sets`,
+    whose target changes with K for ordinary next-step prediction.
+    """
+    budgets = tuple(sorted({int(k) for k in ks}))
+    if not budgets or min(budgets) < 2:
+        raise ValueError("ks must contain support budgets of at least two points")
+    max_k = max(budgets)
+    rows: dict[int, list[dict[str, float | str | int]]] = {k: [] for k in budgets}
+
+    for group, curve in data.groupby("group", sort=False):
+        curve = (
+            curve.groupby("T", as_index=False).y.mean().sort_values("T")
+            .reset_index(drop=True)
+        )
+        if len(curve) < max_k + 1:
+            continue
+        segment = curve.iloc[-(max_k + 1):].reset_index(drop=True)
+        query = segment.iloc[-1]
+        doi = data.loc[data.group.eq(group), "doi"].iloc[0]
+
+        for k in budgets:
+            support = segment.iloc[:k]
+            st, sy = support["T"].to_numpy(float), support.y.to_numpy(float)
+            arr = np.polyfit(1.0 / st, sy, 1)
+            linear = np.polyfit(st, sy, 1)
+            record: dict[str, float | str | int] = {
+                "doi": doi,
+                "group": group,
+                "K": k,
+                "target": float(query.y),
+                "query_T": float(query["T"]),
+                "anchor_T": float(st[-1]),
+                "anchor_logk": float(sy[-1]),
+                "arrhenius_pred": float(np.polyval(arr, 1.0 / float(query["T"]))),
+                "linearT_pred": float(np.polyval(linear, float(query["T"]))),
+                "arrhenius_slope": float(arr[0]),
+                "arrhenius_intercept": float(arr[1]),
+                "support_T": ";".join(f"{value:.12g}" for value in st),
+                "support_y": ";".join(f"{value:.12g}" for value in sy),
+            }
+            for t0 in T0_GRID:
+                a, b = np.polyfit(1.0 / (st - t0), sy, 1)
+                record[f"vft_{int(t0)}"] = float(a / (float(query["T"]) - t0) + b)
+            rows[k].append(record)
+
+    result: dict[int, pd.DataFrame] = {}
+    for k, records in rows.items():
+        queries = pd.DataFrame(records)
+        queries["delta_T"] = queries.query_T - queries.anchor_T
+        queries["delta_invT_1e4"] = (
+            1.0 / queries.anchor_T - 1.0 / queries.query_T
+        ) * 1e4
+        result[k] = queries
+    return result
+
+
 def choose_vft_t0(train: pd.DataFrame) -> float:
     maes = [
         np.mean(np.abs(train.target.to_numpy() - train[f"vft_{int(t0)}"].to_numpy()))

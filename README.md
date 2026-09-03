@@ -17,7 +17,7 @@ and the robotic dataset is reserved for a frozen external score.
 ## Repository layout
 
 - `src/`: data construction and the two locked prediction branches.
-- `scripts/`: grouped-stability and interval-sensitivity experiments.
+- `scripts/`: grouped-stability, fixed-terminal support-budget, and interval-sensitivity experiments.
 - `data/`: instructions for obtaining public source data; raw tables are not
   redistributed here.
 - `results/`: checked manuscript-result artifacts and their protocol records.
@@ -38,6 +38,15 @@ source DOIs. The router has a favorable point estimate against VFT, but the
 paired DOI-level difference is statistically inconclusive after Holm correction.
 The interval analysis is a coverage diagnostic and calibration-sensitivity
 measurement, not a deployment guarantee for chemistry-disjoint prediction.
+
+`results/fixed_target_support_budget/` contains a separate fixed-terminal
+support-budget allocation sensitivity analysis. Each eligible formulation
+contributes one final six-point segment: the K=3, 4, and 5 nested prefixes all
+predict the same sixth/final target. In every outer DOI fold, the router
+threshold and each budget on a pre-specified measurement-cost grid are selected
+inside the outer-training DOI pool. This artifact is a value-of-measurement
+sensitivity analysis, not a prospectively validated curve-specific stopping
+policy.
 
 `scripts/export_external_decision_examples.py` produces three transparent
 illustrative external cases (one per support budget) from already frozen router
