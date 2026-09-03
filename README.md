@@ -1,4 +1,4 @@
-# Data-Efficient Support-Budget Routing for Sparse Electrolyte Curves
+# Support-Budget Routing for Sparse Electrolyte Conductivity Curves
 
 Reproducibility package for a forward-prediction study of lithium-electrolyte
 conductivity curves. The method uses the information available after a small
@@ -8,10 +8,11 @@ five supports.
 
 ## Scope
 
-This is not a composition-to-property screening model. It predicts the next
-higher-temperature point of a *previously measured, single formulation*.
-Source DOI groups are kept apart during development and the robotic dataset is
-reserved for a frozen external score.
+This is not a composition-to-property screening model. It implements a
+process-oriented sequential prediction policy: after several ordered
+measurements for one formulation, it estimates the prescribed next
+higher-temperature point. Source DOI groups are kept apart during development,
+and the robotic dataset is reserved for a frozen external score.
 
 ## Repository layout
 
@@ -24,16 +25,19 @@ reserved for a frozen external score.
 
 ## Current status
 
-The checked revision audit is included. It contains the frozen development-row
-index, 20-seed DOI-grouped router-selection stability results, 20-seed grouped
-calibration-partition sensitivity results, and the AutoDL CPU environment
-record. The raw third-party tables are deliberately not redistributed; see
-`data/README.md` for source access and citation requirements.
+The checked revision audit includes the frozen development-row index,
+DOI-level router--VFT paired errors, query-level predictions, timing records,
+and the paired-difference figure in `results/router_vft_gpr_audit/`. The audit
+was run using 16 vCPUs on an Intel(R) Xeon(R) Gold 6430 processor; the manuscript
+reports the corresponding software versions and timing records. Raw third-party
+tables are deliberately not redistributed; see `data/README.md` for source
+access and citation requirements.
 
-The repeated router audit covers 380 outer-fold decisions (20 seeds across 19
-held-out DOI sources): $p=4$ is selected in 376 decisions (98.95%). The
-calibration audit is a diagnostic of interval sensitivity, not a calibration
-guarantee for a chemistry-disjoint deployment.
+The primary router--VFT audit uses leave-one-DOI-out evaluation over 19 common
+source DOIs. The router has a favorable point estimate against VFT, but the
+paired DOI-level difference is statistically inconclusive after Holm correction.
+The interval analysis is a coverage diagnostic and calibration-sensitivity
+measurement, not a deployment guarantee for chemistry-disjoint prediction.
 
 `scripts/export_external_decision_examples.py` produces three transparent
 illustrative external cases (one per support budget) from already frozen router

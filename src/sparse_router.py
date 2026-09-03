@@ -80,6 +80,8 @@ def make_terminal_queries(data: pd.DataFrame, k: int) -> pd.DataFrame:
             "linearT_pred": float(np.polyval(linear, float(query["T"]))),
             "arrhenius_slope": float(arr[0]),
             "arrhenius_intercept": float(arr[1]),
+            "support_T": ";".join(f"{value:.12g}" for value in st),
+            "support_y": ";".join(f"{value:.12g}" for value in sy),
         }
         for t0 in T0_GRID:
             a, b = np.polyfit(1.0 / (st - t0), sy, 1)

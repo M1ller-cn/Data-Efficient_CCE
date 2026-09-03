@@ -20,16 +20,17 @@ composition identifiers and target-side information are not input features.
 
 ## Included revision-audit artifacts
 
-The checked audit run is stored under `results/revision_audit/`:
+The checked router--VFT/GPR audit is stored under
+`results/router_vft_gpr_audit/`:
 
-1. `router_stability_20/`: 20 seeds x 19 DOI-held-out folds, including the
-   complete inner-split scores, selection frequencies, candidate summaries,
-   and machine-readable protocol;
-2. `conformal_stability_20/`: the 20-seed grouped calibration audit, including
-   DOI--support coverage cells and its summary/protocol;
-3. `environment_autodl_cpu.txt`: Python and installed package versions on the
-   authorized CPU-only AutoDL instance;
-4. `data/derived/development_rows.npy`: the frozen row-index artifact only.
+1. `doi_macro_errors.csv`: DOI-macro errors for the router, VFT, and the
+   independent per-curve GPR;
+2. `query_predictions.csv`: query-level predictions and absolute errors;
+3. `timing_by_outer_fold.csv`: fit-and-predict timing records for each outer
+   DOI fold and support budget;
+4. `router_vs_vft_doi_distribution.png`: the paired DOI-level comparison
+   figure;
+5. `data/development_rows.npy`: the frozen development-row index artifact.
 
 The release does not include raw source tables. Their source citations and
 licensing conditions remain authoritative; see `data/README.md`.
@@ -37,16 +38,11 @@ licensing conditions remain authoritative; see `data/README.md`.
 ## Main commands
 
 ```bash
-python scripts/run_router_stability.py \
+python scripts/run_router_vft_gpr_audit.py \
   --calisol-csv /path/to/calisol23_dataset.csv \
-  --development-rows data/derived/development_rows.npy \
-  --output results/router_stability --n-seeds 20 --n-inner-splits 3
-
-python scripts/run_grouped_split_conformal.py \
-  --calisol-csv /path/to/calisol23_dataset.csv \
-  --development-rows data/derived/development_rows.npy \
-  --output results/conformal_stability --n-calibration-seeds 20
+  --development-rows data/development_rows.npy \
+  --output results/router_vft_gpr_audit
 ```
 
-Run these commands on the designated AutoDL CPU instance.  They are purposely
-CPU-only; no GPU is required for the two sensitivity analyses.
+The audit is CPU-only; no GPU is required. The manuscript reports the hardware
+and software environment used for the checked audit.
