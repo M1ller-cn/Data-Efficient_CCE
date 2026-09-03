@@ -60,6 +60,6 @@ The code is released under the MIT License. Source data remain subject to the
 licences and citation conditions of their original publishers and repositories;
 see `data/README.md`.
 
-The citable, version-specific archival release is v1.0.1,
-https://doi.org/10.5281/zenodo.22266259. The GitHub Release is available at
-https://github.com/M1ller-cn/Data-Efficient_CCE/releases/tag/v1.0.1.
+The citable, version-specific archival release is v1.0.2,
+https://doi.org/10.5281/zenodo.22267188. The GitHub Release is available at
+https://github.com/M1ller-cn/Data-Efficient_CCE/releases/tag/v1.0.2.
