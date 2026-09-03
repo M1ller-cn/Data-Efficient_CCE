@@ -11,8 +11,9 @@ repository artifacts report the same results.
    manuscript tables and figures.
 3. Choose and add a code licence. Do not state that the repository is open
    source until a licence has been selected.
-4. Create an annotated Git tag, for example `v1.0.0`, and publish a GitHub
-   Release from that tag.
+4. The `v1.0.0` GitHub Release is published at
+   `https://github.com/M1ller-cn/Data-Efficient_CCE/releases/tag/v1.0.0`.
+   Do not modify its release artifacts after Zenodo archives the version.
 5. Enable Zenodo archiving for `M1ller-cn/Data-Efficient_CCE`, archive the
    release, and record the version-specific Zenodo DOI.
 6. Replace the pre-submission placeholder in the manuscript's Data and Code
