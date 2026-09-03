@@ -47,6 +47,6 @@ reporting or model selection.
 
 ## Licence and citation
 
-The repository code is intended for scholarly reproducibility. Source data
-remain subject to the licences and citation conditions of their original
-publishers and repositories; see `data/README.md`.
+The code is released under the MIT License. Source data remain subject to the
+licences and citation conditions of their original publishers and repositories;
+see `data/README.md`.
